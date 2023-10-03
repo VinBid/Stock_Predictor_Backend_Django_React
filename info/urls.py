@@ -16,7 +16,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from info import views  # Import your views from the 'info' app
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path('api/info/', views.get_customer_info, name='customer_info'),  # Use the correct view function name
+    path('api/predict_stock_api/', views.predict_stock_api, name='predict_stock_api'),  # Use the correct view function name
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

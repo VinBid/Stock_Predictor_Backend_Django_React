@@ -21,9 +21,11 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    path('', views.home, name='home'),  # Root URL redirects to the home page
     path("admin/", admin.site.urls),
     path('api/info/', views.get_customer_info, name='customer_info'),  # Use the correct view function name
     path('api/predict_stock_api/', views.predict_stock_api, name='predict_stock_api'),  # Use the correct view function name
+    path('sign-in/', views.sign_in, name='sign-in'),
 ]
 
 if settings.DEBUG:

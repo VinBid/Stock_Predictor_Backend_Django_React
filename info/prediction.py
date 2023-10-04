@@ -19,6 +19,7 @@ def get_historical_data(stock_symbol):
         historical_data = yf.Ticker(stock_symbol).history(period="max")
         historical_data = historical_data[['Open', 'High', 'Low', 'Close', 'Volume']]  # Select relevant columns
         historical_data.reset_index(inplace=True)  # Reset index to have Date as a column
+
         historical_data['Date'] = historical_data['Date'].dt.strftime('%Y-%m-%d')  # Format date to string
         historical_data_dict = historical_data.to_dict(orient='records')  # Convert DataFrame to list of dictionaries
 
@@ -38,11 +39,11 @@ def calculate_rsi(data, window=14):
     rsi = 100 - (100 / (1 + rs))
 
     # Debugging prints
-    print("Delta:", delta.head())
-    print("Gain:", gain.head())
-    print("Loss:", loss.head())
-    print("RS:", rs.head())
-    print("RSI:", rsi.head())
+    # print("Delta:", delta.head())
+    # print("Gain:", gain.head())
+    # print("Loss:", loss.head())
+    # print("RS:", rs.head())
+    # print("RSI:", rsi.head())
 
     # Ensure 'rsi' column is numeric
     rsi = pd.to_numeric(rsi, errors='coerce')  # Convert to numeric, coerce non-numeric values to NaN
@@ -79,6 +80,7 @@ def engineer_features(data):
 # processed_data = engineer_features(your_data)
 
 def train_model(data, features, target):
+    print(data)
     trainData = data.copy()
     model = xgb.XGBRegressor(reg_alpha=0.1, reg_lambda=0.1)
     model.fit(trainData[features], trainData[target])

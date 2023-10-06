@@ -26,6 +26,7 @@ urlpatterns = [
     path('api/info/', views.get_customer_info, name='customer_info'),  # Use the correct view function name
     path('api/predict_stock_api/', views.predict_stock_api, name='predict_stock_api'),  # Use the correct view function name
     path('sign-in/', views.sign_in, name='sign-in'),
+    path('register/', views.register, name='register'),
 ]
 
 if settings.DEBUG:

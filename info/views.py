@@ -12,22 +12,47 @@ from django.conf import settings
 import yfinance as yf
 import xgboost as xgb
 from django.shortcuts import render, redirect
-from .forms import SignInForm
+from .forms import SignInForm, UserRegistrationForm
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
 
+def register(request):
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            # Redirect to a login page or a dashboard
+            return redirect('login')
+    else:
+        form = UserRegistrationForm()
+    return render(request, 'registration/register.html', {'form': form})
+    
 def sign_in(request):
     if request.method == 'POST':
         form = SignInForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('home')  # Redirect to the home page or wherever you want to go after sign-in
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(request, username=username, password=password)
+
+            if user is not None:
+                # Log in the user
+                login(request, user)
+                return redirect('home')
+            else:
+                # Authentication failed
+                form.add_error('password', 'Invalid username or password')
+
     else:
         form = SignInForm()
-    
-    return render(request, 'sign_in.html', {'form': form})
 
+    return render(request, 'registration/sign_in.html', {'form': form})
+
+
+@login_required
 def home(request):
-    # Retrieve the user's information from the database (you may need to implement user authentication)
-    user = UserProfile.objects.first()  # For demonstration purposes, this gets the first user in the database
+    user = request.user
     return render(request, 'home.html', {'user': user})
 
 @api_view(['GET'])
